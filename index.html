@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Quiz NBC TP 01 e NBC PP 01 - Professor Moreira</title>
+<style>
+  :root{--azul:#0b3d91;--azul2:#dff1ff;--rosa:#ffe5f1;--verde:#1f8f4d;--vermelho:#c62828;--amarelo:#fff3cd;--texto:#111827;}
+  *{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:linear-gradient(180deg,#e9f5ff,#fff);color:var(--texto)}
+  .app{max-width:520px;margin:0 auto;min-height:100vh;padding:14px;}
+  .card{background:white;border-radius:22px;box-shadow:0 8px 25px rgba(0,0,0,.14);padding:18px;margin:12px 0;border:2px solid #dbeafe;}
+  .header{background:var(--azul);color:white;text-align:center;border-radius:18px;padding:18px 12px;margin-bottom:12px;}
+  .header h1{font-size:23px;margin:0 0 6px;font-weight:900;letter-spacing:.3px}.header p{margin:4px 0;font-size:14px}.tag{display:inline-block;background:#fff;color:var(--azul);border-radius:30px;padding:6px 12px;font-weight:800;margin-top:8px;font-size:13px}
+  input{width:100%;padding:14px;border:2px solid #bcd7ff;border-radius:14px;margin:8px 0 12px;font-size:18px;}
+  button{border:0;border-radius:16px;padding:13px 14px;font-size:17px;font-weight:800;cursor:pointer;margin:6px 3px;}
+  .btn-primary{background:var(--azul);color:white;width:100%;}.btn-next{background:var(--azul);color:white}.btn-back{background:#e5e7eb;color:#111}.btn-reset{background:#111827;color:white}.btn-whats{background:#25D366;color:white;width:100%;}
+  .progress{height:12px;background:#e5e7eb;border-radius:20px;overflow:hidden;margin:12px 0}.bar{height:100%;background:var(--azul);width:0%;transition:.3s}
+  .pillrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between}.pill{background:#eef2ff;border:1px solid #c7d2fe;border-radius:20px;padding:7px 10px;font-weight:800;font-size:13px}
+  .question{background:var(--azul2);border-radius:18px;padding:16px;border-left:7px solid var(--azul);font-size:18px;line-height:1.42;}.question h2{font-size:20px;margin:0 0 10px;color:#072f6b}.options{margin-top:14px}.opt{width:100%;text-align:left;background:#f8fafc;border:2px solid #cbd5e1;border-radius:16px;padding:13px;margin:7px 0;font-size:17px;line-height:1.35}.opt:hover{background:#eef6ff}.opt.correct{background:#dcfce7;border-color:var(--verde)}.opt.wrong{background:#fee2e2;border-color:var(--vermelho)}
+  .explain{background:var(--rosa);border-radius:18px;padding:16px;border-left:7px solid #db2777;font-size:17px;line-height:1.45}.explain h2{margin:0 0 8px;color:#9d174d}.answerBox{background:white;border-radius:14px;border:2px dashed #db2777;padding:12px;margin:10px 0;font-weight:900}.ok{color:var(--verde);font-weight:900}.bad{color:var(--vermelho);font-weight:900}.hidden{display:none}.center{text-align:center}.small{font-size:13px;color:#475569}.scoreBig{font-size:42px;font-weight:900;color:var(--azul);}.finalBox{background:#fef9c3;border:2px solid #fde68a;border-radius:18px;padding:15px;margin:12px 0}.footer{font-size:12px;text-align:center;color:#475569;margin-top:18px}.nav{display:flex;gap:8px;justify-content:space-between;flex-wrap:wrap}.nav button{flex:1;min-width:120px}.mini{font-size:15px;background:#f1f5f9;border-radius:12px;padding:10px;margin-top:10px}.watermark{font-weight:900;color:#0b3d91;text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <h1>CURSO DE CONTABILIDADE<br>PROFESSOR MOREIRA</h1>
+    <p>Quiz Mobile — NBC TP 01 (R1) e NBC PP 01 (R1)</p>
+    <span class="tag">Perícia Contábil • questões comentadas</span>
+  </div>
+
+  <section id="start" class="card">
+    <h2 class="center">TREINAMENTO PESADO</h2>
+    <p>Digite seus dados para liberar o quiz.</p>
+    <label><b>Nome do aluno</b></label>
+    <input id="nome" placeholder="Digite seu nome" />
+    <label><b>WhatsApp</b></label>
+    <input id="whats" placeholder="Ex.: 61 98532-3574" />
+    <button class="btn-primary" onclick="startQuiz()">Liberar Quiz</button>
+    <p class="small center">Questão na tela seguinte. Explicação logo após responder. Placar parcial durante o quiz.</p>
+  </section>
+
+  <section id="quiz" class="hidden">
+    <div class="card">
+      <div class="pillrow">
+        <div class="pill" id="alunoPill">Aluno: —</div>
+        <div class="pill" id="scorePill">Acertos: 0/0</div>
+        <div class="pill" id="qPill">Questão 1/20</div>
+      </div>
+      <div class="progress"><div class="bar" id="bar"></div></div>
+      <div id="screen"></div>
+    </div>
+  </section>
+
+  <div class="footer">Curso de Contabilidade Professor Moreira • CFC na Palma da Mão</div>
+</div>
+<script>
+const questions = [
+{q:'De acordo com a NBC TP 01 (R1) e a NBC PP 01 (R1), quando o laudo pericial contábil é assinado por peritos em conjunto, a responsabilidade sobre o documento é:',opts:['individual, limitada ao trecho redigido por cada perito.','solidária entre os peritos que assinaram o laudo.','exclusiva do perito nomeado pelo juiz.','inexistente, pois o laudo é documento meramente informativo.'],ans:1,exp:'Quando o laudo é assinado em conjunto, há responsabilidade solidária pelo conteúdo do documento. Todos os signatários respondem pelo laudo.'},
+{q:'O planejamento da perícia contábil, segundo a NBC TP 01 (R1), deve ser:',opts:['fixo e imutável após sua elaboração inicial.','dispensado quando o perito já conhece a matéria discutida.','revisado e atualizado sempre que surgirem fatos novos no decorrer da perícia.','elaborado apenas após a entrega do laudo pericial.'],ans:2,exp:'O planejamento é dinâmico. Ele deve ser revisado e atualizado quando surgirem fatos novos capazes de alterar os procedimentos, prazos ou extensão dos trabalhos.'},
+{q:'A perícia judicial caracteriza-se por ser exercida:',opts:['sob a tutela do Poder Judiciário.','sob a tutela exclusiva do Poder Executivo.','apenas por acordo particular entre as partes.','somente no âmbito das câmaras de arbitragem.'],ans:0,exp:'A perícia judicial ocorre no processo judicial e é exercida sob a tutela do Poder Judiciário.'},
+{q:'A perícia extrajudicial, conforme a classificação usual prevista nas normas de perícia contábil, é aquela realizada:',opts:['necessariamente por determinação de sentença judicial.','fora do Poder Judiciário, por vontade das partes ou em ambiente não judicial.','apenas em processos criminais.','exclusivamente por servidor público concursado.'],ans:1,exp:'A perícia extrajudicial ocorre fora do processo judicial. Pode ser contratada pelas partes ou realizada em situações administrativas, privadas ou negociais.'},
+{q:'No exercício da função pericial, o profissional pode responder por seus atos nas esferas:',opts:['apenas ética e administrativa.','apenas civil e trabalhista.','civil, penal, administrativa e ética.','somente penal, quando houver dolo comprovado.'],ans:2,exp:'O perito pode ter responsabilidade civil, penal, administrativa e ética/profissional, conforme a natureza do ato praticado.'},
+{q:'A afirmativa “indenização é penalidade típica da legislação penal aplicada ao perito” está:',opts:['correta, pois indenização é sempre sanção penal.','correta, pois o perito só responde criminalmente.','incorreta, pois indenização se relaciona tipicamente à responsabilidade civil.','incorreta, pois o perito não possui qualquer responsabilidade.'],ans:2,exp:'Indenização está ligada à reparação de dano, isto é, à responsabilidade civil. Penalidade penal envolve sanções próprias do direito penal.'},
+{q:'O perito do juízo é o profissional:',opts:['contratado por uma das partes para emitir parecer técnico.','nomeado pelo juiz para realizar a perícia no processo.','responsável por defender o interesse do autor.','obrigado a concordar com os assistentes técnicos.'],ans:1,exp:'O perito do juízo é nomeado pelo juiz e deve atuar com independência, imparcialidade, zelo e técnica.'},
+{q:'O perito-assistente é o profissional:',opts:['nomeado pelo juiz para substituir o magistrado.','contratado ou indicado pela parte para acompanhar a perícia e emitir parecer técnico-contábil.','responsável por assinar sozinho o laudo pericial judicial.','impedido de analisar documentos do processo.'],ans:1,exp:'O perito-assistente atua em favor técnico da parte que o indicou, podendo acompanhar os trabalhos e elaborar parecer técnico-contábil.'},
+{q:'O laudo pericial contábil é o documento técnico elaborado pelo:',opts:['perito do juízo.','advogado da parte autora.','perito-assistente, exclusivamente.','cartório judicial.'],ans:0,exp:'O laudo pericial contábil é elaborado pelo perito do juízo, contendo conclusão técnica sobre o objeto da perícia.'},
+{q:'O parecer técnico-contábil é o documento técnico elaborado pelo:',opts:['juiz da causa.','perito do juízo, obrigatoriamente.','perito-assistente.','escrivão judicial.'],ans:2,exp:'O perito-assistente emite parecer técnico-contábil, podendo concordar ou discordar tecnicamente do laudo pericial.'},
+{q:'A recusa, escusa ou impedimento do perito deve ocorrer quando:',opts:['o perito quiser atrasar o processo.','existirem circunstâncias que comprometam sua independência, competência ou imparcialidade.','a parte contrária discordar previamente do seu nome.','o valor dos honorários for sempre superior ao esperado.'],ans:1,exp:'O perito deve observar impedimento, suspeição, independência e competência técnica. Havendo fato que comprometa sua atuação, deve comunicar adequadamente.'},
+{q:'A suspeição do perito está relacionada principalmente:',opts:['à falta de papel timbrado no laudo.','à existência de circunstâncias que possam comprometer sua imparcialidade.','à impossibilidade de usar planilhas eletrônicas.','ao simples fato de a perícia ser judicial.'],ans:1,exp:'Suspeição envolve situações que podem afetar a imparcialidade do perito, como relações pessoais, interesse no resultado ou outras circunstâncias relevantes.'},
+{q:'A NBC PP 01 (R1) exige que o perito atue com:',opts:['parcialidade em favor da parte que pagou os honorários.','zelo, independência, competência técnico-profissional e imparcialidade.','sigilo apenas quando o juiz determinar expressamente.','liberdade para ignorar normas profissionais.'],ans:1,exp:'A atuação do perito deve observar zelo, independência, competência, imparcialidade, responsabilidade e cumprimento das normas profissionais.'},
+{q:'O termo de diligência, no contexto da perícia contábil, é utilizado para:',opts:['registrar ou solicitar providências, documentos, informações e esclarecimentos necessários ao trabalho pericial.','substituir integralmente o laudo pericial.','declarar automaticamente a vitória de uma das partes.','aplicar penalidade criminal ao perito.'],ans:0,exp:'O termo de diligência serve para formalizar solicitações e providências necessárias à execução da perícia, como entrega de documentos e informações.'},
+{q:'Os honorários periciais devem ser fixados considerando, entre outros aspectos:',opts:['apenas a vontade da parte autora.','a relevância, o vulto, a complexidade, o tempo estimado e a qualificação técnica necessária.','somente o número de páginas do processo.','exclusivamente o valor do salário mínimo.'],ans:1,exp:'A proposta de honorários deve considerar complexidade, tempo, relevância, extensão dos trabalhos, qualificação, custos e responsabilidade envolvida.'},
+{q:'Caso surjam fatos novos durante a perícia que modifiquem a extensão dos trabalhos inicialmente previstos, o perito deve:',opts:['ignorar os fatos novos para manter o planejamento original.','revisar o planejamento e, quando cabível, ajustar procedimentos, prazos e honorários.','encerrar imediatamente a perícia sem comunicar ninguém.','emitir parecer técnico-contábil no lugar do laudo.'],ans:1,exp:'Fatos novos podem exigir revisão do planejamento, ampliação de procedimentos, alteração de prazo e eventual complementação de honorários.'},
+{q:'A responsabilidade solidária no laudo assinado em conjunto significa que:',opts:['cada perito responde apenas por uma página do laudo.','todos os peritos signatários respondem pelo conteúdo assinado.','somente o perito mais antigo responde pelo documento.','nenhum perito responde, pois a responsabilidade é do juiz.'],ans:1,exp:'Responsabilidade solidária significa que todos os peritos que assinaram em conjunto respondem pelo documento técnico.'},
+{q:'A perícia arbitral é aquela realizada:',opts:['no âmbito da arbitragem, quando a solução da controvérsia é submetida a árbitro ou câmara arbitral.','exclusivamente no processo penal.','sempre dentro de uma vara judicial comum.','apenas pelo Poder Legislativo.'],ans:0,exp:'A perícia arbitral ocorre no procedimento arbitral, que é meio adequado de solução de controvérsias fora da jurisdição estatal comum.'},
+{q:'A afirmativa “a perícia extrajudicial é exercida sob a tutela obrigatória do Poder Executivo ou Legislativo” está:',opts:['correta, pois toda perícia fora do Judiciário pertence a outro Poder.','correta, pois a NBC TP 01 restringe a perícia extrajudicial ao setor público.','incorreta, pois a perícia extrajudicial ocorre fora do Poder Judiciário e pode decorrer da vontade das partes ou de situações privadas/administrativas.','incorreta, pois não existe perícia extrajudicial.'],ans:2,exp:'A perícia extrajudicial não é definida como tutela obrigatória do Executivo ou Legislativo. Ela ocorre fora do processo judicial, podendo ser privada, administrativa ou negocial.'},
+{q:'Em uma questão de prova, foram apontadas como corretas as seguintes ideias: laudo assinado em conjunto gera responsabilidade solidária; o planejamento deve ser atualizado quando surgirem fatos novos. Essas ideias estão:',opts:['ambas incorretas.','corretas, conforme as normas de perícia contábil.','correta apenas a primeira.','correta apenas a segunda.'],ans:1,exp:'As duas ideias estão corretas: o laudo assinado em conjunto gera responsabilidade solidária, e o planejamento deve ser revisado diante de fatos novos.'}
+];
+let idx=0, score=0, answered=false, selected=null, aluno='', whats='';
+function startQuiz(){
+ aluno=document.getElementById('nome').value.trim(); whats=document.getElementById('whats').value.trim();
+ if(!aluno||!whats){alert('Preencha Nome e WhatsApp para liberar o quiz.');return;}
+ localStorage.setItem('pm_aluno_tp01',aluno); localStorage.setItem('pm_whats_tp01',whats);
+ document.getElementById('start').classList.add('hidden'); document.getElementById('quiz').classList.remove('hidden'); renderQ();
+}
+function updateTop(){
+ document.getElementById('alunoPill').textContent='Aluno: '+aluno;
+ document.getElementById('scorePill').textContent='Acertos: '+score+'/'+idx;
+ document.getElementById('qPill').textContent= idx<questions.length ? 'Questão '+(idx+1)+'/20' : 'Final';
+ document.getElementById('bar').style.width=(idx/questions.length*100)+'%';
+}
+function renderQ(){answered=false; selected=null; updateTop(); const it=questions[idx];
+ document.getElementById('screen').innerHTML=`<div class="question"><h2>Questão ${idx+1}</h2><p>${it.q}</p><div class="options">${it.opts.map((o,i)=>`<button class="opt" onclick="choose(${i})"><b>(${String.fromCharCode(65+i)})</b> ${o}</button>`).join('')}</div></div><div class="mini center">Escolha uma alternativa para liberar a explicação.</div><div class="nav"><button class="btn-back" onclick="prevQ()">Voltar</button><button class="btn-reset" onclick="restart()">Reiniciar</button></div>`;
+}
+function choose(i){ if(answered)return; answered=true; selected=i; const it=questions[idx]; if(i===it.ans)score++;
+ document.querySelectorAll('.opt').forEach((b,k)=>{ if(k===it.ans)b.classList.add('correct'); if(k===i&&k!==it.ans)b.classList.add('wrong'); b.disabled=true; });
+ setTimeout(renderExp,450);
+}
+function renderExp(){ const it=questions[idx]; const letra=String.fromCharCode(65+it.ans); const ok=selected===it.ans;
+ let parcial=''; if([4,9,14,19].includes(idx)){parcial=`<div class="finalBox center"><b>Placar parcial:</b><br><span class="scoreBig">${score}/${idx+1}</span></div>`;}
+ document.getElementById('screen').innerHTML=`<div class="explain"><h2>Comentário da Questão ${idx+1}</h2><div class="answerBox">Gabarito: Letra ${letra}</div><p>${ok?'<span class="ok">Você acertou!</span>':'<span class="bad">Você errou.</span>'}</p><p>${it.exp}</p><div class="mini"><b>Macete Professor Moreira:</b><br>Laudo conjunto = responsabilidade solidária. Planejamento = revisa com fatos novos. Perícia judicial = Poder Judiciário. Extrajudicial = fora do Judiciário. Indenização = responsabilidade civil.</div>${parcial}</div><div class="nav"><button class="btn-back" onclick="prevQ()">Voltar</button><button class="btn-next" onclick="nextQ()">Avançar</button><button class="btn-reset" onclick="restart()">Reiniciar</button></div>`;
+ updateTop();
+}
+function nextQ(){idx++; if(idx>=questions.length){renderFinal();}else{renderQ();}}
+function prevQ(){ if(idx>0){idx--; renderQ();}}
+function restart(){ if(confirm('Deseja reiniciar o quiz?')){idx=0;score=0;renderQ();}}
+function renderFinal(){ document.getElementById('bar').style.width='100%'; document.getElementById('qPill').textContent='Final'; document.getElementById('scorePill').textContent='Acertos: '+score+'/20';
+ let pct=Math.round(score/20*100); let msg=pct>=80?'Excelente desempenho!':pct>=60?'Bom desempenho. Revise os pontos de erro.':'Revise o mapa mental e refaça o quiz.';
+ const texto=encodeURIComponent(`Resultado do Quiz NBC TP 01/NBC PP 01%0AAluno: ${aluno}%0AWhatsApp: ${whats}%0AAcertos: ${score}/20 (${pct}%)`);
+ document.getElementById('screen').innerHTML=`<div class="center finalBox"><h2>Resultado Final</h2><div class="scoreBig">${score}/20</div><h3>${pct}% de aproveitamento</h3><p><b>${msg}</b></p></div><div class="card"><h3>Gabarito</h3><p>${questions.map((q,i)=>`${i+1}) ${String.fromCharCode(65+q.ans)}`).join(' &nbsp; ')}</p><div class="watermark">CURSO DE CONTABILIDADE PROFESSOR MOREIRA<br>Trabalhando 24 horas por dia para sua aprovação!</div></div><button class="btn-whats" onclick="window.open('https://wa.me/5561985323574?text=${texto}','_blank')">Enviar resultado pelo WhatsApp</button><button class="btn-reset" style="width:100%" onclick="idx=0;score=0;renderQ()">Refazer Quiz</button>`;
+}
+</script>
+</body>
+</html>
